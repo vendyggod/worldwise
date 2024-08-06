@@ -1,5 +1,4 @@
 .btn {
-  color: inherit;
   text-transform: uppercase;
   padding: 0.8rem 1.6rem;
   font-family: inherit;
@@ -16,6 +15,7 @@
 }
 
 .back {
+  color: #fff;
   font-weight: 600;
   background: none;
   border: 1px solid currentColor;
