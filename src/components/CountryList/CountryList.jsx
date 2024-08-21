@@ -3,13 +3,16 @@ import CountryItem from '../CountryItem/CountryItem';
 import styles from './CountryList.module.css';
 import Spinner from '../Spinner/Spinner';
 import Message from '../Message/Message';
+import { useCities } from '../../contexts/CitiesProvider';
 
 CountryList.propTypes = {
   cities: PropTypes.array,
   isLoading: PropTypes.bool,
 };
 
-function CountryList({ cities, isLoading }) {
+function CountryList() {
+  const { cities, isLoading } = useCities();
+
   if (isLoading) return <Spinner />;
 
   const countries = cities.reduce((arr, city) => {
