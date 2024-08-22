@@ -1,4 +1,5 @@
-import { createContext, useState, useEffect, useContext } from 'react';
+import { createContext, useEffect, useContext, useReducer } from 'react';
+import { initialState, reducer } from '../reducers/CitiesProviderReducer';
 import PropTypes from 'prop-types';
 
 const BASE_URL = 'http://localhost:9000';
@@ -10,40 +11,78 @@ CitiesProvider.propTypes = {
 };
 
 function CitiesProvider({ children }) {
-  const [cities, setCities] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [currentCity, setCurrentCity] = useState({});
+  const [{ cities, isLoading, currentCity, mapPosition }, dispatch] =
+    useReducer(reducer, initialState);
 
   useEffect(() => {
     async function fetchCities() {
       try {
-        setIsLoading(true);
+        dispatch({ type: 'city/loading' });
+
         const res = await fetch(`${BASE_URL}/cities`);
         const data = await res.json();
-
-        setCities(data);
+        dispatch({ type: 'city/loaded', payload: data });
       } catch (err) {
         console.log(err.message);
-      } finally {
-        setIsLoading(false);
       }
     }
     fetchCities();
   }, []);
 
   async function getCity(id) {
+    if (Number(id) === currentCity.id) return;
+
     try {
-      setIsLoading(true);
+      dispatch({ type: 'city/loading' });
 
       const res = await fetch(`${BASE_URL}/cities/${id}`);
       const data = await res.json();
 
-      setCurrentCity(data);
+      dispatch({ type: 'city/loaded', payload: data });
     } catch (err) {
       console.log(err.message);
-    } finally {
-      setIsLoading(false);
     }
+  }
+
+  async function createCity(newCity) {
+    try {
+      dispatch({ type: 'city/loading' });
+
+      const res = await fetch(`${BASE_URL}/cities/`, {
+        method: 'POST',
+        body: JSON.stringify(newCity),
+        headers: {
+          'Content-Type': 'application/js',
+        },
+      });
+      const data = await res.json();
+
+      dispatch({ type: 'city/loaded', payload: [...cities, data] });
+    } catch (err) {
+      console.log(err.message);
+    }
+  }
+
+  async function deleteCity(id) {
+    try {
+      await fetch(`${BASE_URL}/cities/${id}`, {
+        method: 'DELETE',
+      });
+      dispatch({
+        type: 'city/loaded',
+        payload: cities.filter((city) => city.id !== id),
+      });
+    } catch (err) {
+      console.log(err.message);
+    }
+  }
+
+  function defaultMapPosition() {
+    dispatch({ type: 'defaultMapPosition' });
+  }
+
+  function changeMapPosition(coords) {
+    dispatch({ type: 'changeMapPosition', payload: coords });
   }
 
   return (
@@ -53,6 +92,11 @@ function CitiesProvider({ children }) {
         isLoading,
         currentCity,
         getCity,
+        mapPosition,
+        defaultMapPosition,
+        changeMapPosition,
+        createCity,
+        deleteCity,
       }}
     >
       {children}

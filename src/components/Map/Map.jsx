@@ -1,5 +1,5 @@
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
   MapContainer,
@@ -15,8 +15,7 @@ import useGeolocation from '../../hooks/useGeolocation';
 import Button from '../Button/Button';
 
 function Map() {
-  const { cities } = useCities();
-  const [mapPosition, setMapPosition] = useState([47, 8]);
+  const { cities, mapPosition, changeMapPosition } = useCities();
   const [searchParams] = useSearchParams();
   const {
     isLoading: isLoadingPosition,
@@ -28,12 +27,12 @@ function Map() {
   const mapLng = searchParams.get('lng');
 
   useEffect(() => {
-    if (mapLat && mapLng) setMapPosition([mapLat, mapLng]);
+    if (mapLat && mapLng) changeMapPosition([mapLat, mapLng]);
   }, [mapLat, mapLng]);
 
   useEffect(() => {
     if (geolocationPosition)
-      setMapPosition([geolocationPosition.lat, geolocationPosition.lng]);
+      changeMapPosition([geolocationPosition.lat, geolocationPosition.lng]);
   }, [geolocationPosition]);
 
   return (
@@ -43,7 +42,7 @@ function Map() {
       </Button>
       <MapContainer
         center={mapPosition}
-        zoom={5}
+        zoom={6}
         scrollWheelZoom={true}
         className={styles.map}
       >
