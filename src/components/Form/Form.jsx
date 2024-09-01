@@ -3,7 +3,7 @@
 import { useEffect, useReducer } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { initialState, reducer } from '../../reducers/FormReducer';
-import { useCities } from '../../contexts/CitiesProvider';
+import { useCities } from '../../contexts/CitiesContext';
 import Button from '../Button/Button';
 import styles from './Form.module.css';
 import Message from '../Message/Message';

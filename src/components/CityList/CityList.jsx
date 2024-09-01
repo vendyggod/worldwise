@@ -3,7 +3,7 @@ import CityItem from '../CityItem/CityItem';
 import styles from './CityList.module.css';
 import Spinner from '../Spinner/Spinner';
 import Message from '../Message/Message';
-import { useCities } from '../../contexts/CitiesProvider';
+import { useCities } from '../../contexts/CitiesContext';
 
 CityList.propTypes = {
   cities: PropTypes.array,
