@@ -8,12 +8,26 @@ const initialState = {
 
 function reducer(state, action) {
   switch (action.type) {
-    case 'city/loading':
+    case 'loading':
       return { ...state, isLoading: true };
-    case 'city/loaded':
+    case 'cities/loaded':
       return { ...state, isLoading: false, cities: action.payload };
-    case 'currentCity/loaded':
-      return { ...state, currentCity: action.payload };
+    case 'city/loaded':
+      return { ...state, isLoading: false, currentCity: action.payload };
+    case 'city/created':
+      return {
+        ...state,
+        isLoading: false,
+        cities: [...state.cities, action.payload],
+        currentCity: action.payload,
+      };
+    case 'city/deleted':
+      return {
+        ...state,
+        isLoading: false,
+        cities: state.cities.filter((city) => city.id !== action.payload),
+        currentCity: {},
+      };
     case 'defaultMapPosition':
       return { ...state, mapPosition: [47, 8] };
     case 'changeMapPosition':
@@ -21,7 +35,7 @@ function reducer(state, action) {
     case 'rejected':
       return { ...state, isLoading: false, error: action.payload };
     default:
-      throw new Error('CitiesPrividerReducer: Unknown action.');
+      throw new Error('CitiesProviderReducer: Unknown action.');
   }
 }
 
